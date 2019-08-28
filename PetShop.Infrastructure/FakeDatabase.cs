@@ -30,7 +30,10 @@ namespace PetShop.Infrastructure.Data
             dog.Price = 300;
             dog.SoldDate = DateTime.Now.AddDays(-6);
             petList.Add(dog);
-
+            // Add snake
+            Pet snake = new Pet(2, "Jason", PetType.Snake, DateTime.Now.AddDays(-800), Color.Blue, jens);
+            snake.Price = 500;
+            petList.Add(snake);
             allPets = petList;
         }
 

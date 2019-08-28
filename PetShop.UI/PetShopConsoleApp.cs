@@ -3,8 +3,6 @@ using PetShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace PetShop.UI.ConsoleApp
@@ -12,13 +10,13 @@ namespace PetShop.UI.ConsoleApp
     public class PetShopConsoleApp : IPetShopConsoleApp
 
     {
-        private readonly IPetApplicationService service;
+        private readonly IPetApplicationService _service;
         private readonly String CreateCustomerKeyWord = "NEW";
-        private ConsoleColor curTextColor = ConsoleColor.Blue;
+        private ConsoleColor _curTextColor = ConsoleColor.Blue;
 
         public PetShopConsoleApp(IPetApplicationService service)
         {
-            this.service = service;
+            this._service = service;
         }
         public void StartProgram()
         {
@@ -29,66 +27,71 @@ namespace PetShop.UI.ConsoleApp
 
         public void ShowMenu()
         {
-            String welcome = "Pet Shop 1.2";
-            Console.WriteLine(welcome.PadLeft(9 + welcome.Length, ' '));
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("1. See all pets");
-            Console.WriteLine("2. Add new pet");
-            Console.WriteLine("3. Delete pet");
-            Console.WriteLine("4. Update pet");
-            Console.WriteLine("5. Search for pet by name");
-            Console.WriteLine("6. Search for pet by type");
-            Console.WriteLine("7. Manage owners");
-            Console.WriteLine("8. Exit");
-            Console.WriteLine("------------------------------");
-
-            int input;
-            while (!int.TryParse(Console.ReadLine(), out input) || input < 1 || input > 8)
+            bool closed = false;
+            while (!closed)
             {
-                Console.WriteLine("Not a valid input. Try again");
-            }
-            Console.Clear();
+                String welcome = "Pet Shop 1.2";
+                Console.WriteLine(welcome.PadLeft(9 + welcome.Length, ' '));
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("1. See all pets");
+                Console.WriteLine("2. Add new pet");
+                Console.WriteLine("3. Delete pet");
+                Console.WriteLine("4. Update pet");
+                Console.WriteLine("5. Search for pet by name");
+                Console.WriteLine("6. Search for pet by type");
+                Console.WriteLine("7. Manage owners");
+                Console.WriteLine("8. Exit");
+                Console.WriteLine("------------------------------");
 
-            switch (input)
+                int input;
+                while (!int.TryParse(Console.ReadLine(), out input) || input < 1 || input > 8)
+                {
+                    Console.WriteLine("Not a valid input. Try again");
+                }
+                Console.Clear();
+
+                switch (input)
+                {
+                    case 1:
+                        ShowAllPets();
+                        break;
+                    case 2:
+                        AddPet();
+                        break;
+                    case 3:
+                        DeletePet();
+                        break;
+                    case 4:
+                        UpdatePet();
+                        break;
+                    case 5:
+                        SearchForPetByName();
+                        break;
+                    case 6:
+                        SearchForPetByType();
+                        break;
+                    case 7:
+                        ManageOwners();
+                        break;
+                    case 8:
+                        closed = true;
+                        break;
+                }
+            }
+            // Shutting down the application
+            Console.WriteLine("Shutting down the application..");
+            DateTime twoSecondsInTheFuture = DateTime.Now.AddSeconds(2);
+            while (twoSecondsInTheFuture > DateTime.Now)
             {
-                case 1:
-                    ShowAllPets();
-                    break;
-                case 2:
-                    AddPet();
-                    break;
-                case 3:
-                    DeletePet();
-                    break;
-                case 4:
-                    UpdatePet();
-                    break;
-                case 5:
-                    SearchForPetByName();
-                    break;
-                case 6:
-                    SearchForPetByType();
-                    break;
-                case 7:
-                    ManageOwners();
-                    break;
-                case 8:
-                    Console.WriteLine("Shutting down the application..");
-                    DateTime twoSecondsInTheFuture = DateTime.Now.AddSeconds(2);
-                    while (twoSecondsInTheFuture > DateTime.Now)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    break;
+                Thread.Sleep(1000);
             }
-
         }
+
         private void ReturnToMenuMessage()
         {
             Console.WriteLine("Click enter to return to the main menu");
             Console.ReadLine();
             Console.Clear();
-            ShowMenu();
         }
 
         private void ShowLoadingGraphics()
@@ -172,15 +175,15 @@ namespace PetShop.UI.ConsoleApp
 
         private void SwapTextColor()
         {
-            if (curTextColor == ConsoleColor.Red)
+            if (_curTextColor == ConsoleColor.Red)
             {
-                curTextColor = ConsoleColor.Blue;
+                _curTextColor = ConsoleColor.Blue;
             }
             else
             {
-                curTextColor = ConsoleColor.Red;
+                _curTextColor = ConsoleColor.Red;
             }
-            Console.ForegroundColor = curTextColor;
+            Console.ForegroundColor = _curTextColor;
         }
 
         #endregion
@@ -221,7 +224,6 @@ namespace PetShop.UI.ConsoleApp
                         break;
                 }
             }
-            ShowMenu();
         }
 
 
@@ -230,7 +232,7 @@ namespace PetShop.UI.ConsoleApp
         {
             Console.WriteLine("All owners");
             Console.WriteLine("-----------------------------");
-            List<Owner> ownerList = service.GetAllOwners();
+            List<Owner> ownerList = _service.GetAllOwners();
             ownerList.Sort();
             foreach (var owner in ownerList)
             {
@@ -245,7 +247,7 @@ namespace PetShop.UI.ConsoleApp
         {
             Console.WriteLine("Delete owner");
             Console.WriteLine("-----------------------------");
-            if (service.GetAllOwners().Count == 0)
+            if (_service.GetAllOwners().Count == 0)
             {
                 Console.WriteLine("No owners available");
                 Console.WriteLine("Press enter to return");
@@ -255,13 +257,13 @@ namespace PetShop.UI.ConsoleApp
             Console.WriteLine("Please type in the ID of the owner");
             int id;
             Owner owner;
-            while (!int.TryParse(Console.ReadLine(), out id) || (owner = service.GetOwnerById(id)) == null)
+            while (!int.TryParse(Console.ReadLine(), out id) || (owner = _service.GetOwnerById(id)) == null)
             {
                 Console.WriteLine("Not a valid id. Try again.");
             }
 
-            Console.WriteLine("{0} and all his pets has been deleted", owner.FirstName);
-            service.DeleteOwner(owner);
+            Console.WriteLine("{0} and all his pets have been deleted", owner.FirstName);
+            _service.DeleteOwner(owner);
             Console.WriteLine("Press enter to go back to the Owner menu");
             Console.ReadLine();
             Console.Clear();
@@ -295,7 +297,7 @@ namespace PetShop.UI.ConsoleApp
 
                 try
                 {
-                    owner = service.CreateOwner(name, lastName, number);
+                    owner = _service.CreateOwner(name, lastName, number);
                     createdOwner = true;
                 }
                 catch (InvalidDataException x)
@@ -327,7 +329,7 @@ namespace PetShop.UI.ConsoleApp
             {
                 Console.WriteLine("Not a valid type. Try again");
             }
-            List<Pet> results = service.SearchForPetByType(chosenType);
+            List<Pet> results = _service.SearchForPetByType(chosenType);
             ShowSearchResults(results);
             ReturnToMenuMessage();
         }
@@ -338,7 +340,7 @@ namespace PetShop.UI.ConsoleApp
             Console.WriteLine("-----------------------------");
             Console.WriteLine("Type in the name of the pet");
             String name = Console.ReadLine();
-            List<Pet> results = service.SearchForPetByName(name);
+            List<Pet> results = _service.SearchForPetByName(name);
             ShowSearchResults(results);
             ReturnToMenuMessage();
         }
@@ -436,7 +438,7 @@ namespace PetShop.UI.ConsoleApp
                     continue;
                 }
 
-                if (!int.TryParse(input, out id) || (owner = service.GetOwnerById(id)) == null)
+                if (!int.TryParse(input, out id) || (owner = _service.GetOwnerById(id)) == null)
                 {
                     Console.WriteLine("Not a valid id. Try again");
                 }
@@ -451,7 +453,7 @@ namespace PetShop.UI.ConsoleApp
 
             try
             {
-                addedPet = service.CreatePet(name, chosenType, birthDate, chosenColor, owner);
+                addedPet = _service.CreatePet(name, chosenType, birthDate, chosenColor, owner);
                 hasBeenAdded = true;
             }
             catch (InvalidDataException x)
@@ -473,7 +475,7 @@ namespace PetShop.UI.ConsoleApp
         {
             foreach (var pet in pets)
             {
-                Console.WriteLine(pet.Name + " the " + pet.PetType);
+                Console.WriteLine(pet.Name + " the " + pet.Color.ToString().ToLower() +" "+pet.PetType.ToString().ToLower());
                 Console.WriteLine("- Price: {0}", pet.Price);
                 Console.WriteLine("- Birth date: {0}-{1}", pet.Birthdate.Month, pet.Birthdate.Year);
                 Console.WriteLine("- Owner name {0}", pet.CurrentOwner.FirstName);
@@ -486,16 +488,15 @@ namespace PetShop.UI.ConsoleApp
         {
             Console.WriteLine("All pets");
             Console.WriteLine("-----------------------------");
-            List<Pet> allPets = service.GetPets();
+            List<Pet> allPets = _service.GetPets();
             if (allPets.Count == 0)
             {
                 Console.WriteLine("No pets found. Press enter to go back");
                 Console.ReadLine();
                 Console.Clear();
-                ShowMenu();
                 return;
             }
-            PrintList(service.GetPets());
+            PrintList(_service.GetPets());
             bool done = false;
             while (!done)
             {
@@ -516,13 +517,13 @@ namespace PetShop.UI.ConsoleApp
                         Console.Clear();
                         Console.WriteLine("The cheapest pets:");
                         Console.WriteLine("-----------------------------");
-                        PrintList(service.Get5CheapestPets());
+                        PrintList(_service.Get5CheapestPets());
                         break;
                     case 2:
                         Console.Clear();
                         Console.WriteLine("Sorted by price:");
                         Console.WriteLine("-----------------------------");
-                        List<Pet> pets = service.GetPets();
+                        List<Pet> pets = _service.GetPets();
                         pets.Sort();
                         PrintList(pets);
                         break;
@@ -532,7 +533,6 @@ namespace PetShop.UI.ConsoleApp
                 }
             }
             Console.Clear();
-            ShowMenu();
         }
 
         private void DeletePet()
@@ -542,11 +542,11 @@ namespace PetShop.UI.ConsoleApp
             Console.WriteLine("Type in the ID of the pet you want to delete");
             int id;
             Pet foundPet = null;
-            while (!int.TryParse(Console.ReadLine(), out id) || (foundPet = service.GetPetById(id)) == null)
+            while (!int.TryParse(Console.ReadLine(), out id) || (foundPet = _service.GetPetById(id)) == null)
             {
                 Console.WriteLine("Not a valid ID. Try again");
             }
-            service.DeletePet(foundPet);
+            _service.DeletePet(foundPet);
             Console.WriteLine("{0} the {1} has been deleted", foundPet.Name, foundPet.PetType);
             ReturnToMenuMessage();
         }
@@ -575,7 +575,7 @@ namespace PetShop.UI.ConsoleApp
             {
                 String input = Console.ReadLine();
 
-                if (!int.TryParse(input, out id) || (originalPet = service.GetPetById(id)) == null)
+                if (!int.TryParse(input, out id) || (originalPet = _service.GetPetById(id)) == null)
                 {
                     Console.WriteLine("Not a valid id. Try again");
                 }
@@ -649,7 +649,7 @@ namespace PetShop.UI.ConsoleApp
 
             try
             {
-                service.UpdatePet(updatedPet);
+                _service.UpdatePet(updatedPet);
                 Console.WriteLine(consoleMessage);
             }
             catch (InvalidDataException x)
@@ -665,7 +665,7 @@ namespace PetShop.UI.ConsoleApp
         {
             Console.WriteLine("Update owner");
             Console.WriteLine("-----------------------------");
-            if (service.GetAllOwners().Count == 0)
+            if (_service.GetAllOwners().Count == 0)
             {
                 Console.WriteLine("No owners available");
                 Console.WriteLine("Press enter to return");
@@ -675,7 +675,7 @@ namespace PetShop.UI.ConsoleApp
             Console.WriteLine("Please type in the ID of the owner");
             int id;
 
-            while (!int.TryParse(Console.ReadLine(), out id) || service.GetOwnerById(id) == null)
+            while (!int.TryParse(Console.ReadLine(), out id) || _service.GetOwnerById(id) == null)
             {
                 Console.WriteLine("Not a valid id. Try again.");
             }
@@ -712,7 +712,7 @@ namespace PetShop.UI.ConsoleApp
                 Owner owner = new Owner(id, name, lastName, phoneNumber);
                 owner.Email = email;
                 owner.Address = address;
-                service.UpdateOwner(owner);
+                _service.UpdateOwner(owner);
                 Console.WriteLine("The owner has been updated. Press enter to go back");
             }
             catch (InvalidDataException x)

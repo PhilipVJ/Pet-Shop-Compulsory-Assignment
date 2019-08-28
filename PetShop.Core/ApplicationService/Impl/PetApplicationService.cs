@@ -1,21 +1,20 @@
-﻿using System;
+﻿using PetShop.Core.DomainService;
+using PetShop.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using PetShop.Core.DomainService;
-using PetShop.Core.Entities;
 
 namespace PetShop.Core.ApplicationService.Impl
 {
     public class PetApplicationService : IPetApplicationService
     {
-        private readonly IPetRepository petRep;
-        private readonly IOwnerRepository ownerRep;
+        private readonly IPetRepository _petRep;
+        private readonly IOwnerRepository _ownerRep;
         public PetApplicationService(IPetRepository rep, IOwnerRepository ownerRep)
         {
-            this.petRep = rep;
-            this.ownerRep = ownerRep;
+            this._petRep = rep;
+            this._ownerRep = ownerRep;
         }
         #region PetRelated
 
@@ -23,7 +22,7 @@ namespace PetShop.Core.ApplicationService.Impl
         public List<Pet> SearchForPetByName(string name)
         {
             List<Pet> searchResults = new List<Pet>();
-            foreach (var pet in petRep.GetAllPets())
+            foreach (var pet in _petRep.GetAllPets())
             {
                 if (pet.Name.ToLower().Contains(name.ToLower()))
                 {
@@ -52,7 +51,7 @@ namespace PetShop.Core.ApplicationService.Impl
         public List<Pet> SearchForPetByType(PetType type)
         {
             List<Pet> searchResults = new List<Pet>();
-            foreach (var pet in petRep.GetAllPets())
+            foreach (var pet in _petRep.GetAllPets())
             {
                 if (pet.PetType == type)
                 {
@@ -96,13 +95,13 @@ namespace PetShop.Core.ApplicationService.Impl
             int id = GetNextAvailablePetId();
             Pet newPet = new Pet(id, name, petType, birthdate, color, currentOwner);
             SetAndCalculatePrice(newPet);
-            return petRep.CreatePet(newPet);
+            return _petRep.CreatePet(newPet);
         }
 
         public int GetNextAvailablePetId()
         {
             int highestId = 0;
-            foreach (var pet in petRep.GetAllPets())
+            foreach (var pet in _petRep.GetAllPets())
             {
                 if (pet.Id > highestId)
                 {
@@ -114,17 +113,17 @@ namespace PetShop.Core.ApplicationService.Impl
 
         public Pet DeletePet(Pet toDelete)
         {
-            return petRep.DeletePet(toDelete);
+            return _petRep.DeletePet(toDelete);
         }
 
         public Pet GetPetById(int id)
         {
-            return petRep.GetPetById(id);
+            return _petRep.GetPetById(id);
         }
 
         public List<Pet> GetPets()
         {
-            return petRep.GetAllPets().ToList();
+            return _petRep.GetAllPets().ToList();
         }
 
         public Pet UpdatePet(Pet updatedPet)
@@ -151,14 +150,14 @@ namespace PetShop.Core.ApplicationService.Impl
                 throw new InvalidDataException("A price can't be less than 0");
             }
 
-            return petRep.UpdatePet(updatedPet);
+            return _petRep.UpdatePet(updatedPet);
         }
         #endregion
         #region OwnerRelated
         public int GetNextAvailableOwnerId()
         {
             int highestId = 0;
-            foreach (var owner in ownerRep.GetAllOwners())
+            foreach (var owner in _ownerRep.GetAllOwners())
             {
                 if (owner.Id > highestId)
                 {
@@ -171,16 +170,16 @@ namespace PetShop.Core.ApplicationService.Impl
         public Owner DeleteOwner(Owner toDelete)
         {
             // Delete all pets of the owner
-            List<Pet> allPets = petRep.GetAllPets().ToList();
+            List<Pet> allPets = _petRep.GetAllPets().ToList();
             foreach (var pet in allPets)
             {
                 if (pet.CurrentOwner.Id == toDelete.Id)
                 {
-                    petRep.DeletePet(pet);
+                    _petRep.DeletePet(pet);
                 }
             }
             // Delete the owner
-            return ownerRep.DeleteOwner(toDelete);
+            return _ownerRep.DeleteOwner(toDelete);
         }
 
         public Owner UpdateOwner(Owner updatedOwner)
@@ -201,7 +200,7 @@ namespace PetShop.Core.ApplicationService.Impl
             {
                 throw new InvalidDataException("If you add an e-mail it needs the @ sign"); 
             }
-            return ownerRep.UpdateOwner(updatedOwner);
+            return _ownerRep.UpdateOwner(updatedOwner);
         }
 
         public Owner CreateOwner(string firstName, string lastName, int phoneNumber)
@@ -220,17 +219,17 @@ namespace PetShop.Core.ApplicationService.Impl
             }
 
             Owner toAdd = new Owner(GetNextAvailableOwnerId(), firstName, lastName, phoneNumber);
-            return ownerRep.CreateOwner(toAdd);
+            return _ownerRep.CreateOwner(toAdd);
         }
 
         public List<Owner> GetAllOwners()
         {
-            return ownerRep.GetAllOwners().ToList();
+            return _ownerRep.GetAllOwners().ToList();
         }
 
         public Owner GetOwnerById(int id)
         {
-            return ownerRep.GetOwnerById(id);
+            return _ownerRep.GetOwnerById(id);
         }
 
         #endregion
