@@ -78,7 +78,7 @@ namespace PetShop.UI.ConsoleApp
                         break;
                 }
             }
-            // Shutting down the application
+            // Shutting down the application with a slight delay
             Console.WriteLine("Shutting down the application..");
             DateTime twoSecondsInTheFuture = DateTime.Now.AddSeconds(2);
             while (twoSecondsInTheFuture > DateTime.Now)
@@ -164,7 +164,7 @@ namespace PetShop.UI.ConsoleApp
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
-            //Wait half a second before showing meny
+            //Wait half a second before showing menu
             DateTime oneSec = DateTime.Now.AddMilliseconds(500);
             while (DateTime.Now < oneSec)
             {

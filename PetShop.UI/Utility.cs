@@ -7,6 +7,9 @@ namespace PetShop.UI.ConsoleApp
 {
     public class Utility
     {
+        /*
+         * Returns a List with all dates in a given month
+         */
         public static List<DateTime> GetDates(int year, int month)
         {
             return Enumerable.Range(1, DateTime.DaysInMonth(year, month)) 

@@ -21,18 +21,24 @@ namespace PetShop.Infrastructure.Data
 
             List<Pet> petList = new List<Pet>();
             // Add cat
-            Pet cat = new Pet(1, "Charles", PetType.Cat, DateTime.Now.AddDays(-300), Color.Black,karl);
-            cat.Price = 900;
-            cat.SoldDate = DateTime.Now.AddDays(-3);
+            Pet cat = new Pet(1, "Charles", PetType.Cat, DateTime.Now.AddDays(-300), Color.Black, karl)
+            {
+                Price = 900,
+                SoldDate = DateTime.Now.AddDays(-3)
+            };
             petList.Add(cat);
             // Add dog
-            Pet dog = new Pet(2, "Brian", PetType.Dog, DateTime.Now.AddDays(-900), Color.Red, jens);
-            dog.Price = 300;
-            dog.SoldDate = DateTime.Now.AddDays(-6);
+            Pet dog = new Pet(2, "Brian", PetType.Dog, DateTime.Now.AddDays(-900), Color.Red, jens)
+            {
+                Price = 300,
+                SoldDate = DateTime.Now.AddDays(-6)
+            };
             petList.Add(dog);
             // Add snake
-            Pet snake = new Pet(2, "Jason", PetType.Snake, DateTime.Now.AddDays(-800), Color.Blue, jens);
-            snake.Price = 500;
+            Pet snake = new Pet(2, "Jason", PetType.Snake, DateTime.Now.AddDays(-800), Color.Blue, jens)
+            {
+                Price = 500
+            };
             petList.Add(snake);
             allPets = petList;
         }

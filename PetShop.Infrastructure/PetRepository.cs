@@ -17,30 +17,9 @@ namespace PetShop.Infrastructure.Data
             return toCreate;
         }
 
-        public Pet DeletePet(Pet toDelete)
-        {
-            List<Pet> allPets = FakeDatabase.allPets.ToList();
-            allPets.Remove(toDelete);
-            FakeDatabase.allPets = allPets;
-            return toDelete;
-        }
-
         public IEnumerable<Pet> GetAllPets()
         {
             return FakeDatabase.allPets;
-        }
-
-        public Pet GetPetById(int id)
-        {
-            foreach (var item in FakeDatabase.allPets)
-            {
-                if (item.Id == id)
-                {
-                    return item;
-                }
-            }
-
-            return null;
         }
 
         public Pet UpdatePet(Pet updatedPet)
@@ -57,8 +36,29 @@ namespace PetShop.Infrastructure.Data
             }
             allPets.Remove(oldPet);
             allPets.Add(updatedPet);
-            FakeDatabase.allPets = allPets; 
+            FakeDatabase.allPets = allPets;
             return updatedPet;
+        }
+
+        public Pet DeletePet(Pet toDelete)
+        {
+            List<Pet> allPets = FakeDatabase.allPets.ToList();
+            allPets.Remove(toDelete);
+            FakeDatabase.allPets = allPets;
+            return toDelete;
+        }
+
+        public Pet GetPetById(int id)
+        {
+            foreach (var item in FakeDatabase.allPets)
+            {
+                if (item.Id == id)
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
     }
 }
