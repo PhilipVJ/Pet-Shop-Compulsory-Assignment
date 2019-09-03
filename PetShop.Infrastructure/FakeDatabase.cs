@@ -35,7 +35,7 @@ namespace PetShop.Infrastructure.Data
             };
             petList.Add(dog);
             // Add snake
-            Pet snake = new Pet(2, "Jason", PetType.Snake, DateTime.Now.AddDays(-800), Color.Blue, jens)
+            Pet snake = new Pet(3, "Jason", PetType.Snake, DateTime.Now.AddDays(-800), Color.Blue, jens)
             {
                 Price = 500
             };
